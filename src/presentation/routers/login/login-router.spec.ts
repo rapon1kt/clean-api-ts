@@ -2,9 +2,13 @@ import { describe, expect, test } from "vitest";
 import { MissingParamError, InternalServerError } from "../../errors";
 import LoginRouter from "./login-router";
 
+const makeSut = () => {
+	return new LoginRouter();
+};
+
 describe("login router", () => {
 	test("should return 400 with no email is provided", () => {
-		const sut = new LoginRouter();
+		const sut = makeSut();
 		const httpRequest = {
 			body: {
 				password: "any_password",
@@ -17,7 +21,7 @@ describe("login router", () => {
 	});
 
 	test("should return 400 with no password is provided", () => {
-		const sut = new LoginRouter();
+		const sut = makeSut();
 		const httpRequest = {
 			body: {
 				password: undefined,
@@ -30,14 +34,14 @@ describe("login router", () => {
 	});
 
 	test("should return 500 if no httpRequest is provided", () => {
-		const sut = new LoginRouter();
+		const sut = makeSut();
 		const httpResponse = sut.route(undefined);
 		expect(httpResponse.statusCode).toBe(500);
 		expect(httpResponse.body).toEqual(new InternalServerError());
 	});
 
 	test("should return 500 if httpRequest has no body", () => {
-		const sut = new LoginRouter();
+		const sut = makeSut();
 		const httpRequest = {
 			body: undefined,
 		};
