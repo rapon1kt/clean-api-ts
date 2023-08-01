@@ -1,56 +1,6 @@
 import { describe, expect, test } from "vitest";
-
-interface HttpRequest {
-	body: {
-		email: string;
-		password: string;
-	};
-}
-
-class LoginRouter {
-	route(httpRequest: HttpRequest) {
-		if (!httpRequest || !httpRequest.body) {
-			return HttpResponse.serverError();
-		}
-		const { email, password } = httpRequest.body;
-		if (!email) {
-			return HttpResponse.badRequest("email");
-		}
-		if (!password) {
-			return HttpResponse.badRequest("password");
-		}
-	}
-}
-
-class HttpResponse {
-	static badRequest(paramName: string) {
-		return {
-			statusCode: 400,
-			body: new MissingParamError(paramName),
-		};
-	}
-
-	static serverError() {
-		return {
-			statusCode: 500,
-			body: new InternalServerError(),
-		};
-	}
-}
-
-class MissingParamError extends Error {
-	constructor(paramName: string) {
-		super(`Missing param: ${paramName}`);
-		this.name = "MissingParamError";
-	}
-}
-
-class InternalServerError extends Error {
-	constructor() {
-		super(`Server Error`);
-		this.name = "InternalServerError";
-	}
-}
+import { MissingParamError, InternalServerError } from "../../errors";
+import LoginRouter from "./login-router";
 
 describe("login router", () => {
 	test("should return 400 with no email is provided", () => {
