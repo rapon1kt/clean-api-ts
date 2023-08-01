@@ -8,6 +8,11 @@ interface HttpRequest {
 }
 
 export default class LoginRouter {
+	authUseCase: any;
+	constructor(authUseCase) {
+		this.authUseCase = authUseCase;
+	}
+
 	route(httpRequest: HttpRequest) {
 		if (!httpRequest || !httpRequest.body) {
 			return HttpResponse.serverError();
@@ -19,5 +24,6 @@ export default class LoginRouter {
 		if (!password) {
 			return HttpResponse.badRequest("password");
 		}
+		this.authUseCase.auth(email, password);
 	}
 }
