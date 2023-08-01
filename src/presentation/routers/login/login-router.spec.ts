@@ -33,6 +33,7 @@ class HttpResponse {
 	static serverError() {
 		return {
 			statusCode: 500,
+			body: new InternalServerError(),
 		};
 	}
 }
@@ -41,6 +42,13 @@ class MissingParamError extends Error {
 	constructor(paramName: string) {
 		super(`Missing param: ${paramName}`);
 		this.name = "MissingParamError";
+	}
+}
+
+class InternalServerError extends Error {
+	constructor() {
+		super(`Server Error`);
+		this.name = "InternalServerError";
 	}
 }
 
@@ -75,6 +83,7 @@ describe("login router", () => {
 		const sut = new LoginRouter();
 		const httpResponse = sut.route(undefined);
 		expect(httpResponse.statusCode).toBe(500);
+		expect(httpResponse.body).toEqual(new InternalServerError());
 	});
 
 	test("should return 500 if httpRequest has no body", () => {
@@ -84,5 +93,6 @@ describe("login router", () => {
 		};
 		const httpResponse = sut.route(httpRequest);
 		expect(httpResponse.statusCode).toBe(500);
+		expect(httpResponse.body).toEqual(new InternalServerError());
 	});
 });
